@@ -16,9 +16,11 @@ Step 2 : Open project in IDE like Visual Studio, Intellij, ...
           Observe product table : http://localhost:3000/
 
 
-Techonology Used: 
-    - Node.js, ExpressJS 
-    - Frontend: EJS template engine
-Additional dependencies: 
-    - jest & supertest for testing
-    - axios for making api calls on client
+Techonology Used:
+
+            - Node.js, ExpressJS 
+            - Frontend: EJS template engine
+Additional dependencies:
+ 
+            - jest & supertest for testing
+            - axios for making api calls on client
