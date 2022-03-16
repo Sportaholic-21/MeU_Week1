@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include ('../../partials/head') %>
+<style>
+    .paginate {
+        cursor: pointer;
+        color: #007bff;
+    }
+</style>
+</head>
+<body>
+<%- include ('../../partials/nav') %>
+<section class="my-5">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Products</h2>
+                <a class="btn btn-info" href="/product/create">Create New Product</a>
+                <!-- <#% if (message) { %>
+                <div class="alert alert-danger"><pre style="color: red;"><%#= message %></pre></div>
+                <#% } %> -->
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Brand</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product_body">
+                      
+                    </tbody>
+                    <tfoot>
+                        <tr><td class="font-weight-bold text-center" colspan="7">
+                            <span class="paginate" id='first'>First</span> | 
+                            <span class="paginate" id='previous'>Previous</span> | 
+                            <span class="paginate" id='current'>Current</span> | 
+                            <span class="paginate" id='next'>Next</span> | 
+                            <span class="paginate" id='last'>Last</span>
+                        </td></tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<%- include ('../../partials/footer') %>
+<script>
+
+const fetchProducts = async (page, size) => {
+    var products
+    await axios.get('http://localhost:3000/api/products?page='+page+'&size='+size)
+            .then(res => { products = res.data })
+    return products
+}
+
+const fillTable = async function (page = 1, size = 10) {
+    $('#product_body').empty()
+    const productList = await fetchProducts(page, size)
+    productList.forEach(product => {
+        $('#product_body').append(
+            '<tr>\n' +
+                '<td align="center">'+ product.id +'</td>\n' +
+                '<td><a href="/product/'+ product.code +'/edit">' + product.code +'</a></td>\n' +
+                '<td>' + product.name + '</td>\n' +
+                '<td>' + product.category + '</td>\n' +
+                '<td>' + product.brand + '</td>\n' +
+                '<td>' + product.type + '</td>\n' +
+                '<td>' + product.description + '</td>\n' +
+            '</tr>'
+        )
+    })
+    return 
+}
+
+const clickPaginate = async (current, option, maxPage) => {
+    switch (option) {
+        case 1:
+            current = 1
+            break;
+        case 2:
+            if (current != 1) { 
+                current--
+            }
+            break;
+        case 3:
+            break;
+        case 4:
+            if (current != maxPage) {
+                current++;
+            }
+            break;
+        case 5: 
+            current = maxPage;
+            break;
+    }
+    await fillTable(current)
+    return current
+}
+
+$(document).ready(async function () {
+    let page = 1
+    let size = 10
+    let maxPage
+    await fillTable()
+    await axios.get("http://localhost:3000/api/products/count")
+            .then(res => {
+                maxPage = Math.ceil(res.data / size)
+            })
+    $("#first").click(async () => {
+        page = await clickPaginate(page, 1, maxPage)
+    })
+    $("#previous").click(async () => {
+        page = await clickPaginate(page, 2, maxPage)     
+    })
+    $("#current").click(async () => {
+        page = await clickPaginate(page, 3, maxPage)
+    })
+    $("#next").click(async () => {
+        page = await clickPaginate(page, 4, maxPage)
+    })
+    $("#last").click(async () => {
+        page = await clickPaginate(page, 5, maxPage)
+    })
+    $('#mnuProduct').addClass('active');
+});
+</script>
+</body>
+</html>
