@@ -1,7 +1,7 @@
 import request from 'supertest'
 import server from '../src/server'
 
-describe('API Product Endpoints', async () => {
+describe('API Product Endpoints', () => {
     it('should return listing with records', async () => {
         const res = await request(server).get('/api/products?page=1&size=4');
         expect(res.status).toEqual(200);

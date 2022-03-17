@@ -6,8 +6,14 @@ Step 1 : Clone Project
 
         Create new folder, open cmd, go to dir of new folder
         Enter : git clone https://github.com/Sportaholic-21/MeU_Week1
+
+Step 2 : Download Xampp to work with MySQL
         
-Step 2 : Open project in IDE like Visual Studio, Intellij, ...
+          Start MySQL in Xampp
+          Once MySQL is successfully started, open your browser and access http://localhost:80/phpmyadmin/
+          Copy the sql contents found in database folder into the "SQL" tab in PhpMyAdmin and press Go
+        
+Step 3 : Open project in IDE like Visual Studio, Intellij, ...
         
           Open terminal, to init nodes and dependecies, enter: npm install 
           
