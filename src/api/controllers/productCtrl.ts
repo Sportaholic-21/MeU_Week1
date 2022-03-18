@@ -40,8 +40,11 @@ const getProductCount = async (req: any, res: any) => {
     try {
         db.query("SELECT COUNT(*) FROM product", (err, result) => {
             if (err) throw err;
-            console.log(result)
-            return res.json(result)
+            let count
+            for (var i in result[0]) {
+                count = result[0][i]
+            }
+            return res.json(count)
         })
     } catch (error) {
         return res.sendStatus(404)
