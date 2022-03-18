@@ -15,9 +15,9 @@ function validateProductInput (product: any) {
     if (!product) {
         messages.push("No product is provided")
     } else {
-        // if (!product.code) {
-        //     messages.push("No product code is provided")
-        // }
+        if (!product.code) {
+            messages.push("No product code is provided")
+        }
     
         if (!product.name) {
             messages.push("No product name is provided")
@@ -40,10 +40,7 @@ function validateProductInput (product: any) {
         }
     }
 
-    if (messages.length) {
-        let error = new Error(messages.join());
-        throw error;
-    }
+    return messages
 }
 
 export { getSortOrder, validateProductInput }

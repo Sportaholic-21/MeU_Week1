@@ -29,8 +29,7 @@ const getProduct = async (req: any, res: any) => {
         let query = db.query(sql, (err, product) => {
             if (err) throw err
             if (product.length < 1) return res.status(500).json("No product found")
-            console.log(product)
-            return res.json(product)
+            return res.json(product[0])
         })
     } catch (error) {
         return res.status(500).json(error)
@@ -54,14 +53,9 @@ const getProductCount = async (req: any, res: any) => {
 const createProduct = async (req: any, res: any) => {
     try {
         const productInput = req.body
-        try {
-            validateProductInput(productInput)
-            if (!productInput.code) {
-                throw new Error("No product code is provided")
-            }
-        } catch (err) {
-            console.log(err)
-            return res.status(500).send(err)
+        const validate = validateProductInput(productInput)
+        if (validate.length > 0) {
+            return res.status(500).json(validate.join())
         }
         const { code, name, category, brand, type, description } = productInput
         const created_at = Date().toString()
@@ -69,6 +63,7 @@ const createProduct = async (req: any, res: any) => {
                      VALUES ("${code}", "${name}", "${category}", "${brand}", "${type}", "${description}", "${created_at}")`
         let query = db.query(sql, (err, result) => {
             if (err) throw err
+            console.log(result)
             return res.status(200).json("Product created successfully")
         })
     } catch (error) {
@@ -82,11 +77,10 @@ const updateProduct = async (req: any, res: any) => {
     try {
         const productInput = req.body
         const code = req.params.code
-        try {
-            validateProductInput(productInput)
-        } catch (err) {
-            console.log(err)
-            return res.status(500).send(err)
+        const validate = validateProductInput(productInput)
+        if (validate.length > 0 || (validate.length == 1 &&
+            validate[0] != "No product code is provided")) {
+            return res.status(500).send(validate.join())
         }
         const { name, category, brand, type, description } = productInput
         const updated_at = Date().toString()
@@ -102,6 +96,9 @@ const updateProduct = async (req: any, res: any) => {
                     `
         let query = db.query(sql, (err, result) => {
             if (err) throw err
+            if (result.affectedRows == 0) {
+                return  res.status(500).json("No product was updated. It is possible that the code was not found.")
+            }
             return res.status(200).json("Product updated successfully")
         })
     } catch (error) {
